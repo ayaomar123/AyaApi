@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\CartItemController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ItemController;
 use Illuminate\Http\Request;
@@ -30,6 +32,12 @@ Route::group(['middleware' => ['auth:admin']], function () {
 
     Route::delete('items', [ItemController::class, 'destroy']);
     Route::resource('items', ItemController::class);
+
+    Route::delete('carts', [CartController::class, 'destroy']);
+    Route::resource('carts', CartController::class);
+
+    Route::delete('cartItems', [CartItemController::class, 'destroy']);
+    Route::resource('cartItems', CartItemController::class);
 
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 });
