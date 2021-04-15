@@ -28,12 +28,13 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::delete('category', [CategoryController::class, 'destroy']);
     Route::resource('category', CategoryController::class);
 
+    Route::delete('items', [ItemController::class, 'destroy']);
+    Route::resource('items', ItemController::class);
+
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 });
 
 
 
 
-Route::delete('items', [CategoryController::class, 'destroy']);
 
-Route::resource('items', ItemController::class);
