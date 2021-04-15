@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,14 +20,20 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 
 Route::post('/auth/login', [AuthController::class, 'login']);
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('/me', function(Request $request) {
-        return auth()->user();
-    });
+Route::group(['middleware' => ['auth:admin']], function () {
+//    Route::get('/me', function(Request $request) {
+//        return auth()->user();
+//    });
+
+    Route::delete('category', [CategoryController::class, 'destroy']);
+    Route::resource('category', CategoryController::class);
 
     Route::post('/auth/logout', [AuthController::class, 'logout']);
-});;
+});
 
 
-Route::delete('category', [CategoryController::class, 'destroy']);
-Route::resource('category', CategoryController::class);
+
+
+Route::delete('items', [CategoryController::class, 'destroy']);
+
+Route::resource('items', ItemController::class);
