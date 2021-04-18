@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CartItemController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CustomerAuthController;
 use App\Http\Controllers\Api\ItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,9 +24,6 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
 Route::group(['middleware' => ['auth:admin']], function () {
-//    Route::get('/me', function(Request $request) {
-//        return auth()->user();
-//    });
 
     Route::delete('category', [CategoryController::class, 'destroy']);
     Route::resource('category', CategoryController::class);
@@ -42,7 +40,9 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 });
 
-
+Route::post('/customer', [CustomerAuthController::class, 'login']);
+Route::group(['middleware' => ['auth:customers']], function () {
+});
 
 
 
