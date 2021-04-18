@@ -52,6 +52,11 @@ return [
             'provider' => 'admins',
             'hash' => false,
         ],
+        'customers' => [
+            'driver' => 'sanctum',
+            'provider' => 'customers',
+            'hash' => false,
+        ],
     ],
 
     /*

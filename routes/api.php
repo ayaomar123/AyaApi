@@ -31,17 +31,23 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::delete('items', [ItemController::class, 'destroy']);
     Route::resource('items', ItemController::class);
 
+
+
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+});
+
+Route::post('/customer/register', [CustomerAuthController::class, 'register']);
+Route::post('/customer/login', [CustomerAuthController::class, 'login']);
+Route::group(['middleware' => ['auth:customers']], function () {
+    Route::post('/customer/logout', [CustomerAuthController::class, 'logout']);
+    Route::patch('/customer/updateProfile', [CustomerAuthController::class, 'updateProfile']);
+    Route::patch('/customer/editPassword', [CustomerAuthController::class, 'editPassword']);
+
     Route::delete('carts', [CartController::class, 'destroy']);
     Route::resource('carts', CartController::class);
 
     Route::delete('cartItems', [CartItemController::class, 'destroy']);
     Route::resource('cartItems', CartItemController::class);
-
-    Route::post('/auth/logout', [AuthController::class, 'logout']);
-});
-
-Route::post('/customer', [CustomerAuthController::class, 'login']);
-Route::group(['middleware' => ['auth:customers']], function () {
 });
 
 
