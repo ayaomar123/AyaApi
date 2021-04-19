@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\CustomerOrderController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CartItemController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CustomerAuthController;
 use App\Http\Controllers\Api\ItemController;
+use App\Http\Controllers\Api\OrderItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +33,12 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::delete('items', [ItemController::class, 'destroy']);
     Route::resource('items', ItemController::class);
 
+    Route::resource('customerOrder', CustomerOrderController::class);
+    Route::patch('changeOrderStatus', [CustomerOrderController::class, 'changeOrderStatus']);
+    Route::post('getOrderByStatus', [CustomerOrderController::class, 'getOrderByStatus']);
+
+
+
 
 
     Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -38,6 +46,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
 
 Route::post('/customer/register', [CustomerAuthController::class, 'register']);
 Route::post('/customer/login', [CustomerAuthController::class, 'login']);
+
 Route::group(['middleware' => ['auth:customers']], function () {
     Route::post('/customer/logout', [CustomerAuthController::class, 'logout']);
     Route::patch('/customer/updateProfile', [CustomerAuthController::class, 'updateProfile']);
@@ -48,6 +57,9 @@ Route::group(['middleware' => ['auth:customers']], function () {
 
     Route::delete('cartItems', [CartItemController::class, 'destroy']);
     Route::resource('cartItems', CartItemController::class);
+
+    Route::delete('orderItems', [OrderItemController::class, 'destroy']);
+    Route::resource('orderItems', OrderItemController::class);
 });
 
 
