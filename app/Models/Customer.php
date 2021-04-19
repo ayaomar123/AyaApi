@@ -9,7 +9,6 @@ use Laravel\Sanctum\HasApiTokens;
 class Customer extends Model
 {
     use HasFactory,HasApiTokens;
-    protected $table = 'cutomers';
     protected $fillable = [
         'name',
         'email',
@@ -17,4 +16,11 @@ class Customer extends Model
         'mobile',
         'image'
     ];
+
+    public function carts(){
+        return $this->hasMany(Cart::class);
+    }
+    public function cartItems(){
+        return $this->hasMany(CartItem::class);
+    }
 }

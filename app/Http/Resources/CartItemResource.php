@@ -27,6 +27,5 @@ class CartItemResource extends JsonResource
     protected function getTotal(){
         return
             $item_id_price =( Item::find($this->item_id)->special_price?? Item::find($this->item_id)->price )* $this->qty ;
-        //dd( $item_id_price);
     }
 }

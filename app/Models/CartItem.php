@@ -14,7 +14,7 @@ class CartItem extends Model
         'item_id',
         'qty',
         'line_total',
-        'user_id'
+        'customer_id'
     ];
 
     public function carts(){

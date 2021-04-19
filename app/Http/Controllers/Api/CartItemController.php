@@ -17,14 +17,15 @@ class CartItemController extends Controller
     public function index()
     {
 
-        return CartResource::collection(auth()->user()->carts);
+        return CartItemResource::collection(auth()->user()->cartItems);
     }
 
     public function store(Request $request)
     {
+//        dd(auth()->user()->id);
 
         $cart = Cart::create([
-            'user_id' => auth()->user()->id,
+            'customer_id' => auth()->user()->id,
         ]);
         /*foreach (request('items') as $item){
             $price = (Item::find($item['item_id'])->special_price ??Item::find($item['item_id'])->price);
@@ -38,19 +39,22 @@ class CartItemController extends Controller
 
             $data = collect(request('items'))->map(function ($item) use ($cart){
                 $price = (Item::find($item['item_id'])->special_price ??Item::find($item['item_id'])->price);
+
                 return  CartItem::query()->create([
                     'cart_id' => $cart->id,
                     'item_id' => $item['item_id'],
                     'qty' => $item['qty'],
-                    'user_id' => auth()->user()->id,
+                    'customer_id' => auth()->user()->id,
                     'line_total' => $price * $item['qty']
                 ]);
             });
+//            dd($data);
             $total = 0;
             foreach ($data as $datum){
+//                dd($datum->line_total);
                 $total += $datum->line_total;
             }
-             Cart::where('user_id', auth()->user()->id)
+             Cart::where('customer_id', auth()->user()->id)
                 ->update(['total_price' => $total]);
             return response()->json([
                 'message' => 'Items Added To cart successfully',
@@ -72,11 +76,11 @@ class CartItemController extends Controller
             $item->update($data);
             $item->update(['line_total' => $item->qty * $price]);
             $total = 0;
-            $cart = CartItem::where('user_id',auth()->user()->id)->get();
+            $cart = CartItem::where('customer_id',auth()->user()->id)->get();
             foreach ($cart as $datum){
                 $total += $datum->line_total;
             }
-            Cart::where('user_id', auth()->user()->id)
+            Cart::where('customer_id', auth()->user()->id)
                 ->update(['total_price' => $total]);
             return  response()->json([
                 'message' => 'Item Updated success',
@@ -94,19 +98,18 @@ class CartItemController extends Controller
     public function destroy()
     {
 
-//        dd(CartItem::where('user_id',auth()->user()->id));
         if (CartItem::find(request('item_id'))) {
             $item = CartItem::whereIn('item_id', request('item_id'))
-                ->where('user_id',auth()->user()->id)
+                ->where('customer_id',auth()->user()->id)
                 ->delete();
 
             if ($item) {
                 $total = 0;
-                $data = CartItem::where('user_id',auth()->user()->id)->get();
+                $data = CartItem::where('customer_id',auth()->user()->id)->get();
                 foreach ($data as $datum){
                     $total += $datum->line_total;
                 }
-                Cart::where('user_id', auth()->user()->id)
+                Cart::where('customer_id', auth()->user()->id)
                     ->update(['total_price' => $total]);
 
                 return response()->json([

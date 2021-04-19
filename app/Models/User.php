@@ -25,10 +25,5 @@ class User extends Authenticatable
         'image'
     ];
 
-    public function carts(){
-        return $this->hasMany(Cart::class,'user_id');
-    }
-    public function cartItems(){
-        return $this->hasMany(CartItem::class,'user_id');
-    }
+
 }
