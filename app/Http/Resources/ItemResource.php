@@ -21,13 +21,8 @@ class ItemResource extends JsonResource
             'description' => $this->description,
             'image' => $this->image,
             'price' => $this->price,
-            'special_price' => $this->special_price,
             'offer' => $this->offer == 1 ? $this->getOffer() : null,
-            'quantity' => $this->quantity,
-            'category' => $this->mergeWhen(!isset($this->category),
-                $this->getCategory($this->categories)
-            ),
-
+            'category' => $this->getCategory($this->categories),
         ];
     }
 
@@ -35,7 +30,7 @@ class ItemResource extends JsonResource
         return [
             'special_price_start' => $this->special_price_start,
             'special_price_end' => $this->special_price_end,
-            'price_offer' => $this->price_offer
+            'special_price' => $this->special_price
         ];
     }
 

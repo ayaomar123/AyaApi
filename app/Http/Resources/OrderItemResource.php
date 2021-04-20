@@ -19,7 +19,9 @@ class OrderItemResource extends JsonResource
 
     public function toArray($request)
     {
-        //
+        return [
+            'orders' => $this->getOrders(),
+        ];
     }
 
     public function getCustomerOrders()
@@ -35,7 +37,7 @@ class OrderItemResource extends JsonResource
     {
         return collect($this->orders)->map(function ($order){
             return [
-                'status' => $order['status'],
+                'status' => $this->getStatus($order['status']),
                 'total' => $order['total'],
                 'ordered_items' => $this->items()
 
@@ -54,17 +56,17 @@ class OrderItemResource extends JsonResource
         });
     }
 
-//    protected function getStatus($status)
-//    {
-//        if ($this->status == 0) {
-//            return "قيد التجهيز";
-//        } elseif ($this->status == 1) {
-//            return "تم تجهيز الطلب";
-//        } elseif ($this->status == 2) {
-//            return "تم تسليم الطلب";
-//        }
-//        return "الحالة غير صحيحة";
-//    }
+    protected function getStatus($status)
+    {
+        if ($status == 0) {
+            return "قيد التجهيز";
+        }
+        elseif ($status == 1) {
+            return "تم تجهيز الطلب";
+        }
+            return "تم تسليم الطلب";
+
+    }
 
 
 }

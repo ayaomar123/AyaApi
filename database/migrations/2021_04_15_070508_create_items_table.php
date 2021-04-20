@@ -17,15 +17,13 @@ class CreateItemsTable extends Migration
             $table->id();
             $table->string('name');
             $table->longText('description')->nullable();
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->integer('price');
-            $table->integer('quantity');
-            $table->integer('special_price')->nullable();
             $table->boolean('offer')->nullable();
             $table->date('special_price_start')->nullable();
             $table->date('special_price_end')->nullable();
-            $table->double('price_offer')->nullable();
-            $table->bigInteger('category_id')->nullable()->unsigned();
+            $table->integer('special_price')->nullable();
+            $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->timestamps();
         });

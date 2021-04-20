@@ -71,7 +71,7 @@ class ItemController extends Controller
 
             return  response()->json([
                 'message' => 'Items Created success',
-                'data' => $items
+                'data' => ItemResource::collection(Item::where('id',$items->id)->get())
             ], 200);
         } catch (\Exception $e) {
             return response()->error($e->getMessage());
@@ -113,16 +113,16 @@ class ItemController extends Controller
         $data = $request->all();
         if($data){
         $item = Item::findOrFail($id);
+//        dd($item);
         $item->update($data);
             return  response()->json([
                 'message' => 'Items Updated success',
-                'data' => $item
+                'data' => ItemResource::collection(Item::where('id',$id)->get())
             ], 200);
         }
 
         return  response()->json([
             'message' => 'Please Choose at least one item to edit',
-//            'data' => $item
         ], 503);
     }
 

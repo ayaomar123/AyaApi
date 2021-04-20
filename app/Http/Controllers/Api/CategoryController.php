@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ItemResource;
 use App\Models\Category;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -63,7 +65,7 @@ class CategoryController extends Controller
             $items = Category::create(\request()->all());
             return  response()->json([
                 'message' => 'Items Created success',
-                'data' => $items
+                'data' => CategoryResource::collection(Category::where('id',$items->id)->get())
             ], 200);
         } catch (\Exception $e) {
             return response()->error($e->getMessage());
@@ -107,7 +109,7 @@ class CategoryController extends Controller
             $item->update($data);
             return  response()->json([
                 'message' => 'Item Updated success',
-                'data' => $item
+                'data' => CategoryResource::collection(Category::where('id',$item->id)->get())
             ], 200);
         }
         return  response()->json([

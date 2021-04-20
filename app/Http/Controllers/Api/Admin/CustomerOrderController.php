@@ -20,7 +20,10 @@ class CustomerOrderController extends Controller
             'id' => 'required',
             'customer_id' => 'required',
         ]);
-
+        if (count(Order::all())<=0)
+            return response()->json([
+                'message' => 'No Order Item Found!',
+            ], 200);
         Order::where('customer_id', \request()->customer_id)->where('id',\request()->id)
             ->update(['status' => \request()->status]);
         return response()->json([

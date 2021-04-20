@@ -15,7 +15,6 @@ class Item extends Model
        'image',
        'price',
        'special_price',
-       'quantity',
        'offer',
        'special_price_start',
        'special_price_end',

@@ -28,7 +28,6 @@ class ItemRequest extends FormRequest
             'image' => 'required',
             'price' => 'required',
             'offer' => 'required',
-            'quantity' => 'required',
             'category_id' => 'required',
         ];
     }
