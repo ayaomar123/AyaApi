@@ -10,6 +10,7 @@ class OrderItem extends Model
     use HasFactory;
     protected $fillable = [
         'item_id',
+        'order_id',
         'price',
         'qty',
         'line_total',
@@ -20,4 +21,5 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
 }

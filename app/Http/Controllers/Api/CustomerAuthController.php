@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerAuthController extends Controller
 {
@@ -41,15 +42,15 @@ class CustomerAuthController extends Controller
             'email' => 'required|string|email|',
             'password' => 'required|string|min:6'
         ]);
-//        dd($data);
-
-        if (!Auth::attempt($data)) {
+        $customer = Customer::where('email', $request->email)->first();
+        if (!$customer || Hash::check($request->password, $customer->password)) {
             return $this->error('Credentials not match', 401);
         }
+        return response()->json([
+        'msg' => "login Successfully",
+        'token' => $customer->createToken('customer')->plainTextToken
+    ]);
 
-        return $this->success([
-            'token' => auth()->user()->createToken('Api Customer Token')->plainTextToken
-        ]);
     }
 
     public function logout()

@@ -36,6 +36,7 @@ Route::group(['middleware' => ['auth:admin']], function () {
     Route::resource('customerOrder', CustomerOrderController::class);
     Route::patch('changeOrderStatus', [CustomerOrderController::class, 'changeOrderStatus']);
     Route::post('getOrderByStatus', [CustomerOrderController::class, 'getOrderByStatus']);
+    Route::get('getCustomerOrder', [CustomerOrderController::class, 'getCustomerOrder']);
 
 
 

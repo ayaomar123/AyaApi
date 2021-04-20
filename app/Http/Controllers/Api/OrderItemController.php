@@ -45,34 +45,36 @@ class OrderItemController extends Controller
             'customer_id' => auth()->user()->id,
             'status' =>0
         ]);
-        foreach ($cartItem as $item){
-            $price = (Item::find($item['item_id'])->special_price ??Item::find($item['item_id'])->price);
+        foreach ($cartItem as $item) {
+            $price = (Item::find($item['item_id'])->special_price ?? Item::find($item['item_id'])->price);
             $myOrder = OrderItem::query()->create([
                 'customer_id' => auth()->user()->id,
                 'item_id' => $item->item_id,
                 'qty' => $item->qty,
                 'price' => $price,
+                'order_id' => $orders->id,
                 'line_total' => $price * $item->qty
             ]);
             CartItem::where('item_id', $item->item_id)
-                ->where('customer_id',auth()->user()->id)
+                ->where('customer_id', auth()->user()->id)
                 ->delete();
+
+
+            Cart::where('customer_id', auth()->user()->id)
+                ->delete();
+            $data = OrderItem::where('customer_id', auth()->user()->id)->where('order_id', $orders->id)->get();
+
+            $total = 0;
+            foreach ($data as $datum) {
+                $total += $datum->line_total;
+            }
+            Order::where('customer_id', auth()->user()->id)
+                ->update(['total' => $total]);
+
+
         }
-
-        Cart::where('customer_id', auth()->user()->id)
-            ->delete();
-        $data = OrderItem::where('customer_id',auth()->user()->id)->get();
-
-        $total = 0;
-        foreach ($data as $datum){
-            $total += $datum->line_total;
-        }
-        Order::where('customer_id', auth()->user()->id)
-            ->update(['total' => $total]);
-
         return response()->json([
             'message' => 'Items Ordered successfully',
-            'data' => $myOrder
         ], 200);
     }
 

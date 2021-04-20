@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 
 class Customer extends Model
-{
+{use HasApiTokens;
     use HasFactory,HasApiTokens;
     protected $fillable = [
         'name',
@@ -17,10 +17,21 @@ class Customer extends Model
         'image'
     ];
 
-    public function carts(){
-        return $this->hasMany(Cart::class);
+    public function cart(){
+        return $this->hasOne(Cart::class);
     }
+
     public function cartItems(){
         return $this->hasMany(CartItem::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 }
