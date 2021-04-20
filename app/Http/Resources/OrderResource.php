@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Item;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,31 +14,26 @@ class OrderResource extends JsonResource
      * @param Request $request
      * @return array
      */
-
     public function toArray($request)
     {
-
-            return [
-                'customer_id' => $this->customer,
-                'details' => $this->details(),
-
-            ];
-    }
-
-    protected function details()
-    {
-
         return [
-            'item' =>Item::find($this->item_id)->name,
-            'item_price' => Item::find($this->item_id)->special_price ?? Item::find($this->item_id)->price,
-            'quantity' => $this->qty,
-            'total_price' => $this->getTotal(),
+            'customer_name' => Customer::find($this->customer_id)->name,
+            'customer_email' => Customer::find($this->customer_id)->email,
+            'customer_mobile' => Customer::find($this->customer_id)->mobile,
+            'status' => $this->getStatus(),
+            'total' => $this->total,
         ];
     }
 
-    protected function getTotal()
+    protected function getStatus()
     {
-        return
-            $item_id_price = (Item::find($this->item_id)->special_price ?? Item::find($this->item_id)->price) * $this->qty;
+        if ($this->status == 0) {
+            return "قيد التجهيز";
+        } elseif ($this->status == 1) {
+            return "تم تجهيز الطلب";
+        } elseif ($this->status == 2) {
+            return "تم تسليم الطلب";
+        }
+        return "الحالة غير صحيحة";
     }
 }

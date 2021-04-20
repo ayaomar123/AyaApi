@@ -55,7 +55,6 @@ return [
         'customers' => [
             'driver' => 'sanctum',
             'provider' => 'customers',
-            'hash' => false,
         ],
     ],
 
@@ -88,6 +87,7 @@ return [
         'customers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Customer::class,
+            'table' => 'customers',
         ],
         // 'users' => [
         //     'driver' => 'database',

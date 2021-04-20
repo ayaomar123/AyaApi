@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CartItemRequest;
 use App\Http\Resources\CartItemResource;
-use App\Http\Resources\CartResource;
+use Validator;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Item;
@@ -16,63 +16,71 @@ class CartItemController extends Controller
 {
     public function index()
     {
-
         return CartItemResource::collection(auth()->user()->cartItems);
     }
 
     public function store(Request $request)
     {
-//        dd(auth()->user()->id);
-
-        $cart = Cart::create([
-            'customer_id' => auth()->user()->id,
-        ]);
-        /*foreach (request('items') as $item){
-            $price = (Item::find($item['item_id'])->special_price ??Item::find($item['item_id'])->price);
-            CartItem::query()->create([
-                'cart_id' => $cart->id,
-                'item_id' => $item['item_id'],
-                'qty' => $item['qty'],
-                'line_total' => $price * $item['qty']
-            ]);
-        }*/
-
-            $data = collect(request('items'))->map(function ($item) use ($cart){
-                $price = (Item::find($item['item_id'])->special_price ??Item::find($item['item_id'])->price);
-
-                return  CartItem::query()->create([
-                    'cart_id' => $cart->id,
-                    'item_id' => $item['item_id'],
-                    'qty' => $item['qty'],
-                    'customer_id' => auth()->user()->id,
-                    'line_total' => $price * $item['qty']
-                ]);
-            });
-//            dd($data);
-            $total = 0;
-            foreach ($data as $datum){
-//                dd($datum->line_total);
-                $total += $datum->line_total;
+        if(request('items')!=null) {
+            foreach (request('items') as $req) {
+                $exist = CartItem::where('item_id', $req['item_id'])
+                    ->where('customer_id', auth()->user()->id)
+                    ->get();
             }
-             Cart::where('customer_id', auth()->user()->id)
-                ->update(['total_price' => $total]);
+            if (count($exist) <= 0) {
+
+                $cart = Cart::create([
+                    'customer_id' => auth()->user()->id,
+                ]);
+                /*foreach (request('items') as $item){
+                    $price = (Item::find($item['item_id'])->special_price ??Item::find($item['item_id'])->price);
+                    CartItem::query()->create([
+                        'cart_id' => $cart->id,
+                        'item_id' => $item['item_id'],
+                        'qty' => $item['qty'],
+                        'line_total' => $price * $item['qty']
+                    ]);
+                }*/
+
+                $data = collect(request('items'))->map(function ($item) use ($cart) {
+                    $price = (Item::find($item['item_id'])->special_price ?? Item::find($item['item_id'])->price);
+                    return CartItem::query()->create([
+                        'cart_id' => $cart->id,
+                        'item_id' => $item['item_id'],
+                        'qty' => $item['qty'],
+                        'customer_id' => auth()->user()->id,
+                        'line_total' => $price * $item['qty']
+                    ]);
+                });
+                $total = 0;
+                $myCart = CartItem::where('customer_id',auth()->user()->id)->get();
+                foreach ($myCart as $datum) {
+                    $total += $datum->line_total;
+                }
+                Cart::where('customer_id', auth()->user()->id)
+                    ->update(['total_price' => $total]);
+                return response()->json([
+                    'message' => 'Items Added To cart successfully',
+                    'data' => $data
+                ], 200);
+            }
             return response()->json([
-                'message' => 'Items Added To cart successfully',
-                'data' => $data
+                'message' => 'Items Already Exist!',
             ], 200);
+        }
+        return response()->json([
+            'message' => 'Items are required!',
+        ], 200);
 
 
     }
 
     public function update(Request $request, $id)
     {
-
         $data = $request->all();
         if ($data){
             $item = CartItem::findOrFail($id);
             $price = (Item::find($item['item_id'])->special_price ??Item::find($item['item_id'])->price);
-
-//            dd($item);
             $item->update($data);
             $item->update(['line_total' => $item->qty * $price]);
             $total = 0;
@@ -94,7 +102,6 @@ class CartItemController extends Controller
 
     }
 
-//remove items from cart
     public function destroy()
     {
 
