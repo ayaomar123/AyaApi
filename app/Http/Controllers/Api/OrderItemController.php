@@ -21,7 +21,7 @@ class OrderItemController extends Controller
      */
     public function index()
     {
-        return OrderItemResource::collection(Customer::query()->with('orderItems')->get());
+        return OrderItemResource::collection(Order::query()->where('customer_id',auth()->user()->id)->get());
     }
 
 

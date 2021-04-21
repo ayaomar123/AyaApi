@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class CustomerAuthController extends Controller
@@ -16,11 +15,12 @@ class CustomerAuthController extends Controller
     public function register(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'name' => 'required',
+            'email' => 'required|email|unique:customers',
+            'password' => 'required|confirmed',
             'mobile' => 'required',
         ]);
+//        dd($request);
 
         $customer = Customer::create([
             'name' => $data['name'],

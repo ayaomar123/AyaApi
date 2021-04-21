@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Customer;
 use App\Models\Item;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +21,10 @@ class OrderItemResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'orders' => $this->getOrders(),
+//            'id' => $this->id,
+            'status' =>$this->getStatus($this->status),
+            'total' => $this->total,
+            'order_item' => $this->myOrder(),
         ];
     }
 
@@ -66,6 +70,10 @@ class OrderItemResource extends JsonResource
         }
             return "تم تسليم الطلب";
 
+    }
+
+    protected function myOrder(){
+        return OrderItem::query()->where('customer_id',auth()->user()->id)->get();
     }
 
 
