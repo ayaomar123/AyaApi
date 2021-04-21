@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Traits\ApiResponser;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,10 +17,11 @@ class AuthController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-            'mobile' => 'required',
+            'email' => 'required|unique:users',
+            'password' => 'required|confirmed',
+            'mobile' => 'required|unique:users',
         ]);
+//        dd($data);
 
         $user = User::create([
             'name' => $data['name'],
@@ -36,8 +38,8 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $data = $request->validate([
-            'email' => 'required|string',
-            'password' => 'required|string|min:6'
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
         if (!Auth::attempt($data)) {

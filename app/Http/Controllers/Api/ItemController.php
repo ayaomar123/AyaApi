@@ -133,7 +133,7 @@ class ItemController extends Controller
      */
     public function destroy()
     {
-        try {
+        if(\request('id') != null) {
             $item = Item::whereIn('id', \request('id'))
                 ->delete();
 
@@ -147,8 +147,8 @@ class ItemController extends Controller
                     'message' => 'Item Not Found',
                 ], 404);
             }
-        } catch (\Exception $e) {
-            return response()->error($e->getMessage());
-        }
+        } return  response()->json([
+        'message' => 'Please Choose at least one Item to delete',
+    ], 500);
     }
 }

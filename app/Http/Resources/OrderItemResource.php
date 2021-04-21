@@ -73,7 +73,9 @@ class OrderItemResource extends JsonResource
     }
 
     protected function myOrder(){
-        return OrderItem::query()->where('customer_id',auth()->user()->id)->get();
+//        return OrderItem::query()->where('customer_id',auth()->user()->id)->get();
+        return (OrderItem::query()->where('customer_id',auth()->user()->id)->get());
+
     }
 
 

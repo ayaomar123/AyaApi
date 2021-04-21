@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
@@ -14,13 +15,13 @@ class CustomerAuthController extends Controller
 
     public function register(Request $request)
     {
+//        dd($request->all());
         $data = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:customers',
+            'name' => 'required|string|max:255',
+            'email' => 'required|unique:customers',
             'password' => 'required|confirmed',
-            'mobile' => 'required',
+            'mobile' => 'required|unique:customers',
         ]);
-//        dd($request);
 
         $customer = Customer::create([
             'name' => $data['name'],
@@ -30,7 +31,7 @@ class CustomerAuthController extends Controller
         ]);
 
         return response()->json([
-            'customer' => $customer,
+            'message' => "Registered Successfully",
             'token' => $customer->createToken('Api Customer Token', ['role:customer'])->plainTextToken
         ]);
     }
@@ -39,11 +40,11 @@ class CustomerAuthController extends Controller
     {
 
         $data = $request->validate([
-            'email' => 'required|string|email|',
-            'password' => 'required|string|min:6'
+            'email' => 'required',
+            'password' => 'required'
         ]);
         $customer = Customer::where('email', $request->email)->first();
-        if (!$customer || Hash::check($request->password, $customer->password)) {
+        if (!$customer || !Hash::check($request->password, $customer->password)) {
             return $this->error('Credentials not match', 401);
         }
         return response()->json([
@@ -73,15 +74,18 @@ class CustomerAuthController extends Controller
         $user->save();
         return response()->json([
             'message' => 'Customer Updated Profile Successfully',
-            'data' => $user
+            'data' => CustomerResource::collection(Customer::query()->where('id',$user->id)->get())
         ], 200);
     }
 
     public function editPassword()
     {
+        $data = \request()->validate([
+            'password' => 'required|confirmed',
+        ]);
         $user = Customer::find(\auth()->user()->id);
         $requestData = \request()->all();
-        if(\request()->password){
+        if(\request()->password == \request()->password_confirmation){
             $requestData['password'] = bcrypt($requestData['password']);
         }
         else{
@@ -90,7 +94,7 @@ class CustomerAuthController extends Controller
         $user->update($requestData);
         return response()->json([
             'message' => 'Customer Updated Password Successfully',
-            'data' => $user
+            'data' => CustomerResource::collection(Customer::query()->where('id',$user->id)->get())
         ], 200);
     }
 

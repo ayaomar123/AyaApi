@@ -16,8 +16,8 @@ class CartItemController extends Controller
 {
     public function index()
     {
-        return CartItemResource::collection(Customer::query()->with('cartItems')->get())->map->getCustomerCarts();
-//        return CartItemResource::collection(auth()->user()->cartItems);
+//        return CartItemResource::collection(Customer::query()->with('cartItems')->get())->map->getCustomerCarts();
+        return CartItemResource::collection(auth()->user()->cartItems);
     }
 
     public function store()
@@ -78,9 +78,12 @@ class CartItemController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
+//        dd($data);
         if ($data) {
+//            dd($data);
             $item = CartItem::findOrFail($id);
             $price = (Item::find($item['item_id'])->special_price ?? Item::find($item['item_id'])->price);
+
             $item->update($data);
             $item->update(['line_total' => $item->qty * $price]);
             $total = 0;
@@ -105,11 +108,13 @@ class CartItemController extends Controller
     public function destroy()
     {
 
-        if (CartItem::find(request('item_id'))) {
-            $item = CartItem::whereIn('item_id', request('item_id'))
+        if (count(\request()->toArray()) > 0) {
+            $item = CartItem::query()
+                ->WhereIn('cart_id',\request('cart_id'))
+                ->orWhereIn('item_id', \request('item_id'))
                 ->where('customer_id', auth()->user()->id)
                 ->delete();
-
+//dd($item);
             if ($item) {
                 $total = 0;
                 $data = CartItem::where('customer_id', auth()->user()->id)->get();

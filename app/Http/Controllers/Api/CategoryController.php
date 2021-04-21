@@ -24,6 +24,7 @@ class CategoryController extends Controller
                 Category::whereNull('parent_id')
                 ->get()
         );
+
         return  response()->json([
             'message' => 'success',
             'data' => $categories
@@ -127,7 +128,8 @@ class CategoryController extends Controller
      */
     public function destroy()
     {
-        try {
+
+        if(\request('id') != null) {
             $item = Category::whereIn('id', \request('id'))
                 ->orWhere('parent_id', \request('id'))
                 ->delete();
@@ -142,8 +144,10 @@ class CategoryController extends Controller
                     'message' => 'Item Not Found',
                 ], 404);
             }
-        } catch (\Exception $e) {
-            return response()->error($e->getMessage());
         }
+            return response()->json([
+                "message" => "Please chose at least one category to delete"
+            ],500);
+
     }
 }

@@ -38,7 +38,7 @@ class CartItemResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'item' =>$this->name ,
+            'item' =>Item::find($this->item_id)->name ,
             'quantity' => $this->qty,
             'price' => Item::find($this->item_id)->special_price ?? Item::find($this->item_id)->price,
             'line_total' => $this->getTotal(),
