@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderItemResource;
+use App\Http\Resources\OrderResource;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Customer;
@@ -21,7 +22,7 @@ class OrderItemController extends Controller
      */
     public function index()
     {
-        return OrderItemResource::collection(Order::query()->where('customer_id',auth()->user()->id)->get());
+        return OrderResource::collection(Customer::query()->where('id',auth()->user()->id)->get())->map->myOrder();
     }
 
 

@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use App\Models\Customer;
+use App\Models\Item;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -36,4 +38,26 @@ class OrderResource extends JsonResource
         }
         return "الحالة غير صحيحة";
     }
-}
+
+    public function myOrder()
+    {
+        return [
+            'customer_name' => Customer::find($this->id)->name,
+            'status' => $this->getStatus(),
+            'total' => Order::query()->where('customer_id',$this->id)->first()->total,
+            'items' => $this->items(),
+        ];
+    }
+
+    protected function items()
+    {
+        return collect($this->orderItems)->map(function ($order) {
+            return [
+                'name' => Item::find($order['item_id'])->name,
+                'price' => $order['price'],
+                'quantity' => $order['qty'],
+                'line_total' => $order['price'] * $order['qty']
+            ];
+        });
+    }
+    }
