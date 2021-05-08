@@ -21,7 +21,6 @@ class AuthController extends Controller
             'password' => 'required|confirmed',
             'mobile' => 'required|unique:users',
         ]);
-//        dd($data);
 
         $user = User::create([
             'name' => $data['name'],

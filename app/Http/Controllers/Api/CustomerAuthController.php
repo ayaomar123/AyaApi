@@ -15,7 +15,6 @@ class CustomerAuthController extends Controller
 
     public function register(Request $request)
     {
-//        dd($request->all());
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|unique:customers',

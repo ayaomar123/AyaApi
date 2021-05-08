@@ -56,8 +56,8 @@ class OrderResource extends JsonResource
                 'name' => Item::find($order['item_id'])->name,
                 'price' => $order['price'],
                 'quantity' => $order['qty'],
-                'line_total' => $order['price'] * $order['qty']
-            ];
+                'line_total' => $order['price'] * $order['qty'],
+                ];
         });
     }
     }

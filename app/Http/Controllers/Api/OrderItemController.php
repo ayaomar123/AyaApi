@@ -24,6 +24,7 @@ class OrderItemController extends Controller
     {
         return OrderResource::collection(Customer::query()->where('id',auth()->user()->id)->get())->map->myOrder();
     }
+    //شغش
 
 
     public function store()
